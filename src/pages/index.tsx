@@ -12,6 +12,8 @@ import Image from 'next/image';
 
 // images
 import salonWebp from '../../public/salon.webp';
+import productWebp from '../../public/product.webp';
+import ongleWebp from '../../public/ongle.webp';
 
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 
@@ -170,14 +172,60 @@ export default function Home() {
         <section
           className={styles.icHomeHeroSecondaryContainer}
         >
-          <div>
-
-          </div>
-          <div>
-            <Image
-              src={salonWebp}
-              alt="Image du salon de coiffure"
-            />
+          <div className={styles.icHomeHeroSecondaryImgsContainer}>
+            <div>
+              <Image
+                src={salonWebp}
+                alt="Une image du salon de coiffure"
+                width={6236}
+                height={4157}
+                className={styles.icHomeHeroSecondaryImg}
+              />
+            </div>
+            <div>
+              <Image
+                src={productWebp}
+                alt="Une image de certain produit du salon"
+                width={6234}
+                height={4156}
+                className={styles.icHomeHeroSecondaryImg}
+              />
+            </div>
+            <div>
+              <Image
+                src={ongleWebp}
+                alt="Une image des vernis à ongle du salon"
+                width={6236}
+                height={4157}
+                className={styles.icHomeHeroSecondaryImg}
+              />
+            </div>
+            <div>
+              <Image
+                src={salonWebp}
+                alt="Une image du salon de coiffure"
+                width={6236}
+                height={4157}
+                className={styles.icHomeHeroSecondaryImg}
+              />
+            </div>
+            <div className={styles.icHomeHeroSecondaryImgPlus}>
+              <p className={styles.icHomeHeroSecondary} style={{
+                    position: 'absolute',
+                    zIndex: 1,
+                    color: 'white'
+              }}>Voir les photos</p>
+              <Image
+                src={productWebp}
+                alt="Une image de certain produit du salon"
+                width={6234}
+                height={4156}
+                className={styles.icHomeHeroSecondaryImg}
+                style={{
+                  position: 'absolute',
+                }}
+              />
+            </div>
           </div>
         </section>
       </main>

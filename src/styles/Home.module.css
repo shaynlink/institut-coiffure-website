@@ -337,11 +337,6 @@ b9becc
   border-top-right-radius: 15rem;
 }
 
-/*
-d1b5b1
-9095a3
-*/
-
 .icArrowBottom {
   position: absolute;
   bottom: 0;
@@ -365,7 +360,47 @@ d1b5b1
 .icHomeHeroSecondaryContainer {
   width: 100vw;
   height: 100vh;
-  background-color: rgb(62, 55, 51);
+  background-color: rgb(0, 0, 0);
+  padding: 5rem;
+}
+
+.icHomeHeroSecondaryImgsContainer {
+  width: 100%;
+  display: grid;
+  grid-template-rows: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.icHomeHeroSecondaryImgsContainer > div {
+  margin: .5rem;
+}
+
+.icHomeHeroSecondaryImgsContainer > div:first-child {
+  grid-column-start: 1;
+  grid-column-end: 3;
+  grid-row-start: 1;
+  grid-row-end: 3;
+}
+
+.icHomeHeroSecondaryImgsContainer > div:last-child > img {
+  filter: blur(2.5px) brightness(0.5);
+}
+
+.icHomeHeroSecondaryImgsContainer > div > img {
+  border-radius: 8px;
+}
+
+.icHomeHeroSecondaryImgPlus {
+  display: flex;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+.icHomeHeroSecondaryImg {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 @-moz-keyframes bounce {
