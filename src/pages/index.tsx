@@ -1,122 +1,185 @@
-import Head from 'next/head'
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
+import { Lato } from '@next/font/google'
 import styles from '@/styles/Home.module.css'
+import * as THREE from 'three';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
+import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment';
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
+import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
+import { createRef, useEffect, LegacyRef } from 'react';
+import Button from '@/components/Button';
+import { classNameIcon, classNames } from '@/utils';
+import Image from 'next/image';
 
-const inter = Inter({ subsets: ['latin'] })
+// images
+import salonWebp from '../../public/salon.webp';
+
+const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 
 export default function Home() {
+  /**
+   * Get DIV container for append canvas (threeJS context)
+   * @type {LegacyRef<HTMLDivElement>}
+   */
+  const model3dContainerRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
+  const arrowBottomRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
+
+  useEffect(() => {
+    // on dev mode, can usually left context on render and unload model
+    // when hot reload
+    // you must reload page for create another context
+    /**
+     * @todo auto reconnect context to threejs
+     */
+    if (window.renderer3dModelLoaded) {
+      // prevent again load another 3D model on dev mode.
+      return;
+    }
+    window.renderer3dModelLoaded = true;
+
+    let mixer: THREE.AnimationMixer | undefined;
+    let scissorsModel: THREE.Group | undefined;
+    
+    const clock = new THREE.Clock();
+
+    const m3DCWidth = (model3dContainerRef.current?.clientWidth ?? 1) + 50;
+    const m3DCHeight = model3dContainerRef.current?.clientHeight ?? 1;
+
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setClearColor(0x000000, 0);
+    renderer.setSize(m3DCWidth, m3DCHeight);
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    model3dContainerRef.current?.appendChild(renderer.domElement);
+
+    const pmremGenerator = new THREE.PMREMGenerator(renderer);
+    
+    const scene = new THREE.Scene();
+    scene.environment = pmremGenerator.fromScene(
+      new RoomEnvironment(),
+      0.04
+    ).texture;
+
+    const camera = new THREE.PerspectiveCamera(50, m3DCWidth / m3DCHeight, 1, 100);
+    camera.position.set(5, 2, 8);
+
+    const controls = new OrbitControls(camera, renderer.domElement);
+    controls.target.set(0, 0.5, 0);
+    controls.update();
+    controls.enablePan = false;
+    controls.enableDamping = true;
+    controls.maxDistance = 15;
+    controls.minDistance = 10;
+
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath(
+      'https://unpkg.com/three@0.149.0/examples/jsm/libs/draco/gltf/'
+    );
+    dracoLoader.preload();
+
+    const scissorsLoader = new GLTFLoader();
+    scissorsLoader.load('barbers_scissors.glb', function(gltf) {
+      scissorsModel = gltf.scene;
+
+      scissorsModel.traverse((child) => {
+        if (child instanceof THREE.Mesh) {
+          child.material = new THREE.MeshStandardMaterial({
+            color: 0x977EA2,
+            metalness: 0.5,
+            roughness: 0.4
+          });
+        }
+      })
+
+      scene.add(scissorsModel);
+
+      mixer = new THREE.AnimationMixer(scissorsModel);
+      mixer.clipAction(gltf.animations[ 0 ]).play();
+
+      animate();
+
+    }, function(xhr) {
+      console.log('[📦] %s / %s (%s%) barbers scissors\' model downloaded', xhr.loaded, xhr.total, xhr.loaded / xhr.total * 100)
+    }, console.error);
+
+    window.onresize = function() {
+      const newM3DCWidth = (model3dContainerRef.current?.clientWidth ?? 1) + 50;
+      const newM3DCHeight = model3dContainerRef.current?.clientHeight ?? 1
+
+      camera.aspect = newM3DCWidth / newM3DCHeight;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(newM3DCWidth, newM3DCHeight);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      
+      const delta = clock.getDelta();
+      
+      mixer?.update(delta);
+      
+      controls.update();
+
+      if (scissorsModel) {
+        scissorsModel.rotation.y += 0.01
+      }
+      
+      renderer.render(scene, camera);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (arrowBottomRef.current) {
+      window.onscroll = () => {
+        if (arrowBottomRef.current) {
+          const supportPageOffset = window.pageYOffset !== undefined;
+          const isCSS1Compat = ((document.compatMode || "") === "CSS1Compat");
+
+          const scrollTop = supportPageOffset ? window.pageYOffset : isCSS1Compat ? document.documentElement.scrollTop : document.body.scrollTop;
+          
+          arrowBottomRef.current.style.opacity = `${1 - scrollTop / 500}`;
+        }
+      }
+    }
+
+    return (): void => { window.onscroll = null };
+  }, [arrowBottomRef])
+
   return (
     <>
-      <Head>
-        <title>Create Next App</title>
-        <meta name="description" content="Generated by create next app" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-      <main className={styles.main}>
-        <div className={styles.description}>
-          <p>
-            Get started by editing&nbsp;
-            <code className={styles.code}>pages/index.tsx</code>
-          </p>
-          <div>
-            <a
-              href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              By{' '}
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                className={styles.vercelLogo}
-                width={100}
-                height={24}
-                priority
-              />
-            </a>
-          </div>
-        </div>
+      <main className={lato.className}>
+        <section className={styles.icHomeHeroPrincipal}>
+          <div
+            className={styles.icHomeHeroPrincipalTextContainer}
+          >
+            <h1>
+              Vous voulez vous faire une <br />
+              petite{' '}
+              <span style={{color: 'white', textDecoration: 'underline'}}>beauté</span>{' '}
+              <span style={{color: 'white'}}>?</span>
+            </h1>
 
-        <div className={styles.center}>
-          <Image
-            className={styles.logo}
-            src="/next.svg"
-            alt="Next.js Logo"
-            width={180}
-            height={37}
-            priority
-          />
-          <div className={styles.thirteen}>
+            <Button text={'Reserver maintenant'} icon={'event'}/>
+          </div>
+          <div className={styles.icHomeHeroPrincipalContainer}>
+            <div className={styles.icHome3DContainer} ref={model3dContainerRef} />
+          </div>
+        </section>
+        <div ref={arrowBottomRef} className={classNames(styles.icArrowBottom, styles.icBounce)}>
+          <span className={classNames(styles.icIconArrowBottom, classNameIcon)}>expand_more</span>
+        </div>
+        <section
+          className={styles.icHomeHeroSecondaryContainer}
+        >
+          <div>
+
+          </div>
+          <div>
             <Image
-              src="/thirteen.svg"
-              alt="13"
-              width={40}
-              height={31}
-              priority
+              src={salonWebp}
+              alt="Image du salon de coiffure"
             />
           </div>
-        </div>
-
-        <div className={styles.grid}>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Docs <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Find in-depth information about Next.js features and&nbsp;API.
-            </p>
-          </a>
-
-          <a
-            href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Learn <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Learn about Next.js in an interactive course with&nbsp;quizzes!
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Templates <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Discover and deploy boilerplate example Next.js&nbsp;projects.
-            </p>
-          </a>
-
-          <a
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            className={styles.card}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <h2 className={inter.className}>
-              Deploy <span>-&gt;</span>
-            </h2>
-            <p className={inter.className}>
-              Instantly deploy your Next.js site to a shareable URL
-              with&nbsp;Vercel.
-            </p>
-          </a>
-        </div>
+        </section>
       </main>
     </>
   )

@@ -1,0 +1,29 @@
+.icWelcomeContainer {
+  width: 100vw;
+  height: 100vh;
+  z-index: 2;
+  position: fixed;
+}
+
+.icWelcome {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  font-size: xx-large;
+}
+
+.icWelcomeButton {
+  margin-top: 3rem;
+  border: none;
+  background-color: #A5E1F8;
+  font-size: x-large;
+  border-radius: 8px;
+  padding: 9px 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+}

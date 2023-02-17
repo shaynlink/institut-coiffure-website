@@ -1,0 +1,47 @@
+.icNavbar {
+    font-size: 20px;
+    height: 4rem;
+    width: 100vw;
+    display: grid;
+    grid-template-columns: 2fr 2fr 10rem;
+    padding: 0rem 2rem;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    color: white;
+}
+
+.icNavbarBranding {
+    text-transform: uppercase;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.icNavbarLinks {
+    list-style: none;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+}
+
+.icNavbarButtons {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.icNavbarButton {
+    border: none;
+    background-color: #000;
+    color: #fff;
+    font-size:medium;
+    border-radius: 8px;
+    padding: 9px 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
