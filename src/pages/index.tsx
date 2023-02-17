@@ -84,7 +84,7 @@ export default function Home() {
       scissorsModel.traverse((child) => {
         if (child instanceof THREE.Mesh) {
           child.material = new THREE.MeshStandardMaterial({
-            color: 0x977EA2,
+            color: 0x000000,
             metalness: 0.5,
             roughness: 0.4
           });
