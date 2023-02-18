@@ -4,7 +4,7 @@ import { ButtonHTMLAttributes, CSSProperties, DetailedHTMLProps } from 'react';
 import { ForwardRefComponent, HTMLMotionProps, motion } from 'framer-motion';
 
 interface ButtonProps {
-    text: string;
+    text?: string;
     icon?: string | undefined;
     buttonStyles?: CSSProperties | undefined;
     iconStyles?: CSSProperties | undefined;
@@ -19,8 +19,8 @@ export default function Button({
     motionButton,
     ...basicProps
 }: ButtonProps & DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>): JSX.Element {
-    if (!text) {
-        throw Error('Missing text in Button component');
+    if (!text && !icon) {
+        throw Error('Must have text or icon props in Button component');
     }
 
     if (!buttonStyles) buttonStyles = {};

@@ -5,25 +5,60 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls';
 import { RoomEnvironment } from 'three/examples/jsm/environments/RoomEnvironment';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader';
 import { DRACOLoader } from 'three/examples/jsm/loaders/DRACOLoader';
-import { createRef, useEffect, LegacyRef } from 'react';
+import { createRef, useEffect, LegacyRef, useState } from 'react';
 import Button from '@/components/Button';
 import { classNameIcon, classNames } from '@/utils';
-import Image from 'next/image';
+import Image, { ImageProps } from 'next/image';
+import ImageViewer from '@/components/ImageViewer';
+import Link from 'next/link';
 
 // images
 import salonWebp from '../../public/salon.webp';
 import productWebp from '../../public/product.webp';
 import ongleWebp from '../../public/ongle.webp';
 
+const imgs: ImageProps[] = [
+  {
+    src: salonWebp,
+    alt: "Une image du salon de coiffure",
+    width: 6236,
+    height: 4157,
+    className: styles.icHomeHeroSecondaryImg,
+  },
+  {
+    src: productWebp,
+    alt: "Une image de certain produit du salon",
+    width: 6234,
+    height: 4156,
+    className: styles.icHomeHeroSecondaryImg,
+  },
+  {
+    src: ongleWebp,
+    alt: "Une image des vernis à ongle du salon",
+    width: 6236,
+    height: 4157,
+    className: styles.icHomeHeroSecondaryImg,
+  }
+]
+
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 
 export default function Home() {
+  const [imgSelectedIndex, setImgSelectedIndex] = useState<number | null>(null);
   /**
    * Get DIV container for append canvas (threeJS context)
    * @type {LegacyRef<HTMLDivElement>}
    */
   const model3dContainerRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
   const arrowBottomRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
+
+  const handleCloseImageViewer = () => {
+    setImgSelectedIndex(null);
+  }
+
+  const handleOpenImageViewer = (i: number) => {
+    setImgSelectedIndex(i);
+  }
 
   useEffect(() => {
     // on dev mode, can usually left context on render and unload model
@@ -127,6 +162,7 @@ export default function Home() {
       
       renderer.render(scene, camera);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -159,8 +195,10 @@ export default function Home() {
               <span style={{color: 'white', textDecoration: 'underline'}}>beauté</span>{' '}
               <span style={{color: 'white'}}>?</span>
             </h1>
-
-            <Button text={'Reserver maintenant'} icon={'event'}/>
+            <div style={{display: 'flex', gap: '1rem'}}>
+              <Button text={'Reserver maintenant'} icon={'event'}/>
+              <Button text={'Appeler'} icon={'call'}/>
+            </div>
           </div>
           <div className={styles.icHomeHeroPrincipalContainer}>
             <div className={styles.icHome3DContainer} ref={model3dContainerRef} />
@@ -173,58 +211,46 @@ export default function Home() {
           className={styles.icHomeHeroSecondaryContainer}
         >
           <div className={styles.icHomeHeroSecondaryImgsContainer}>
-            <div>
-              <Image
-                src={salonWebp}
-                alt="Une image du salon de coiffure"
-                width={6236}
-                height={4157}
-                className={styles.icHomeHeroSecondaryImg}
-              />
+            {imgs.map((image, i) => (
+              <div
+                key={i}
+                className={(i == imgs.length -1 ? styles.icHomeHeroSecondaryImgPlus : '')}
+              >
+                {i == imgs.length - 1 && (
+                  <p
+                    className={styles.icHomeHeroSecondaryText}
+                    onClick={() => handleOpenImageViewer(i)}  
+                  >Voir les photos</p>
+                )}
+                {/* eslint-disable-next-line jsx-a11y/alt-text */}
+                <Image
+                  {...image}
+                  style={{
+                    position: i == imgs.length -1 ? 'absolute' : 'unset',
+                  }}
+                  onClick={() => handleOpenImageViewer(i)}
+                />
+              </div>
+            ))}
+          </div>
+          {imgSelectedIndex !== null && 
+            <ImageViewer
+              images={imgs}
+              baseIndex={imgSelectedIndex}
+              handleClose={handleCloseImageViewer}
+            />
+          }
+          <div className={styles.icHomeHeroSecondaryInfo}>
+            <div className={styles.icTextualInfos}>
+              <h1>Institut Coiffure</h1>
+              <Link
+                href={'https://goo.gl/maps/RcA221caMDVTn3sv7'}
+                className={styles.icAddress}>105 Rte de Toulouse, 33400 Talence
+              </Link>
+              <p>05 56 87 11 17</p>
             </div>
             <div>
-              <Image
-                src={productWebp}
-                alt="Une image de certain produit du salon"
-                width={6234}
-                height={4156}
-                className={styles.icHomeHeroSecondaryImg}
-              />
-            </div>
-            <div>
-              <Image
-                src={ongleWebp}
-                alt="Une image des vernis à ongle du salon"
-                width={6236}
-                height={4157}
-                className={styles.icHomeHeroSecondaryImg}
-              />
-            </div>
-            <div>
-              <Image
-                src={salonWebp}
-                alt="Une image du salon de coiffure"
-                width={6236}
-                height={4157}
-                className={styles.icHomeHeroSecondaryImg}
-              />
-            </div>
-            <div className={styles.icHomeHeroSecondaryImgPlus}>
-              <p className={styles.icHomeHeroSecondary} style={{
-                    position: 'absolute',
-                    zIndex: 1,
-                    color: 'white'
-              }}>Voir les photos</p>
-              <Image
-                src={productWebp}
-                alt="Une image de certain produit du salon"
-                width={6234}
-                height={4156}
-                className={styles.icHomeHeroSecondaryImg}
-                style={{
-                  position: 'absolute',
-                }}
-              />
+
             </div>
           </div>
         </section>

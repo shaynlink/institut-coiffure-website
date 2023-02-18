@@ -9,11 +9,17 @@ import { useEffect, useState, createRef, LegacyRef } from 'react';
 // Components
 import Navbar from '@/components/Navbar';
 import Button from '@/components/Button';
+import type { NotifSettingInterface } from 'types';
 
 const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
 
+interface NotifElement extends HTMLDivElement {
+  _timeout: NodeJS.Timeout
+}
+
 export default function App({ Component, pageProps }: AppProps) {
   const welcomePopupRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
+  const notifierRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
   const [isFirstTime, setFirstTime] = useState(false);
 
   const handleWelcomeButton = () => {
@@ -36,7 +42,88 @@ export default function App({ Component, pageProps }: AppProps) {
       return;
     }
     console.log('[🛠️] setting - [first_time: false]');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFirstTime]);
+
+  useEffect(() => {
+    if (!window.notifInc) {
+      window.notifInc = 0;
+    }
+
+    if (!window.createNotif) {
+      window.createNotif = function(msg: string, color: [string, string], time: number, setting?: NotifSettingInterface) {
+        window.notifInc++;
+        const notif = document.createElement('div') as NotifElement;
+        
+        const content = document.createElement('div');
+        if (setting?.contentStyle) {
+          for (const [key, value] of Object.entries(setting.contentStyle)) {
+            content.style[key as any] = value;
+          }
+        }
+        content.innerHTML = msg;
+
+        const loader = document.createElement('div');
+        loader.className = styles.icNotifLoader;
+
+        const loadBar = document.createElement('div');
+        loadBar.className = styles.icNotifLoadBar;
+
+        loader.appendChild(loadBar);
+
+        notif.appendChild(content);
+        notif.appendChild(loader);
+
+        notif.id = `notif-${window.notifInc}`;
+        const endTime = Date.now() + time;
+        const duration = endTime - Date.now();
+
+        function getElapsedPercentage() {
+          const elapsed = Math.max(0, duration - (endTime - Date.now())); // Temps écoulé en ms
+          return (elapsed / duration) * 100; // Pourcentage de temps écoulé
+        }
+
+        const interval = setInterval(() => {
+          console.log(getElapsedPercentage())
+          loadBar.style.width = `${getElapsedPercentage()}%`, 0
+        });
+
+        notif._timeout = setTimeout(() => {
+          setTimeout(() => {
+            clearInterval(interval);
+            notif.remove();
+          }, 1000);
+          notif.style.animation = '.2s ease-in slideout';
+          notif.style.opacity = '0';
+        }, time);
+        notif.style.color = color.shift() as string;
+        notif.style.backgroundColor = color.shift() as string;
+
+        if (setting?.style) {
+          for (const [key, value] of Object.entries(setting.style)) {
+            notif.style[key as any] = value;
+          }
+        }
+
+        if (notifierRef.current) {
+          notifierRef.current.appendChild(notif);
+        }
+      }
+
+      window.createNotif(
+        '<span class="material-symbols-outlined" style="margin-right: 1rem">warning</span> Le site est actuellement en bêta, si vous rencontrée des difficultés merci de me contacter',
+        ['black', '#EAEA0A'],
+        5000,
+        {
+          contentStyle: {
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }
+        }
+      )
+    }
+  }, []);
 
   return (
     <>
@@ -79,6 +166,10 @@ export default function App({ Component, pageProps }: AppProps) {
         <Navbar />
         <Component {...pageProps} />
       </motion.div>
+      <div
+        ref={notifierRef}
+        className={classNames(styles.icNotifier, lato.className)}
+      />
     </>
   )
 }

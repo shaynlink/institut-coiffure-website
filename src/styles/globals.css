@@ -33,3 +33,25 @@ a {
   'GRAD' -25,
   'opsz' 48
 }
+
+@keyframes slidein {
+  from {
+    opacity: 0;
+    transform: translateX(1em);
+  }
+  to {
+    transform: translateX(0em);
+    opacity: 1;
+  }
+}
+
+@keyframes slideout {
+  from {
+    opacity: 1;
+    transform: translateX(0em);
+  }
+  to {
+    transform: translateX(1em);
+    opacity: 0;
+  }
+}
