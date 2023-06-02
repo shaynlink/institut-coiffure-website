@@ -4,23 +4,51 @@ import styles from '@/styles/App.module.css';
 import { motion } from 'framer-motion';
 import { Lato } from '@next/font/google';
 import { classNames } from '@/utils';
-import { useEffect, useState, createRef, LegacyRef } from 'react';
+import { useEffect, useState, createRef, LegacyRef, useReducer } from 'react';
+import axios, {
+  type AxiosRequestConfig
+} from 'axios';
+import useSWR from 'swr';
+import type {
+  Category,
+} from '../../types/api';
+import type { NotifSettingInterface } from 'types';
+import { ThemeContext, ThemeDispatchContext, Theme } from '@/lib/ThemeContext';
 
 // Components
 import Navbar from '@/components/Navbar';
 import Button from '@/components/Button';
-import type { NotifSettingInterface } from 'types';
+import Footer from '@/components/Footer';
+import Head from 'next/head';
 
-const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] })
+const lato = Lato({ subsets: ['latin'], weight: ['400', '700'] });
 
 interface NotifElement extends HTMLDivElement {
   _timeout: NodeJS.Timeout
+}
+
+function fetcher<T>(url: string, config: AxiosRequestConfig<T>) {
+  return axios.get(url, config).then(({data}) => data);
+}
+
+function themeReducer(state: Theme, action: Theme): Theme {
+  return action;
 }
 
 export default function App({ Component, pageProps }: AppProps) {
   const welcomePopupRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
   const notifierRef: LegacyRef<HTMLDivElement> = createRef<HTMLDivElement>();
   const [isFirstTime, setFirstTime] = useState(false);
+  const [theme, dispatch] = useReducer<(state: Theme, action: Theme) => Theme>(themeReducer, 'light');
+
+  const { data, error } = useSWR<Category[]>(
+    process.env.NEXT_PUBLIC_API + '/services?key=app',
+    (url) => fetcher<{ params: { limitServices: number } }>(url, {
+      params: {
+        limitServices: 3,
+      }
+    })
+  );
 
   const handleWelcomeButton = () => {
     window.localStorage.setItem('first_time', 'no');
@@ -54,7 +82,7 @@ export default function App({ Component, pageProps }: AppProps) {
       window.createNotif = function(msg: string, color: [string, string], time: number, setting?: NotifSettingInterface) {
         window.notifInc++;
         const notif = document.createElement('div') as NotifElement;
-        
+
         const content = document.createElement('div');
         if (setting?.contentStyle) {
           for (const [key, value] of Object.entries(setting.contentStyle)) {
@@ -84,7 +112,6 @@ export default function App({ Component, pageProps }: AppProps) {
         }
 
         const interval = setInterval(() => {
-          console.log(getElapsedPercentage())
           loadBar.style.width = `${getElapsedPercentage()}%`, 0
         });
 
@@ -127,49 +154,57 @@ export default function App({ Component, pageProps }: AppProps) {
 
   return (
     <>
-      <div
-        ref={welcomePopupRef}
-        className={styles.icWelcomeContainer}
-        style={{ display: 'none' }}
-      >
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: isFirstTime ? 1 : 0, y: 0 }}
-          className={classNames(styles.icWelcome, lato.className)}
-        >
-          <h1>Votre Institut Coiffure</h1>
-          <h1>fait peau neuve</h1>
+      <Head>
+        <title>L&apos;Institut Coiffure</title>
+      </Head>
+      <ThemeContext.Provider value={theme}>
+        <ThemeDispatchContext.Provider value={dispatch}>
+          <div
+            ref={welcomePopupRef}
+            className={styles.icWelcomeContainer}
+            style={{ display: 'none' }}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: isFirstTime ? 1 : 0, y: 0 }}
+              className={classNames(styles.icWelcome, lato.className)}
+            >
+              <h1>Votre Institut Coiffure</h1>
+              <h1>fait peau neuve</h1>
 
-          <Button
-            text={'Entrée'}
-            icon={'arrow_forward'}
-            motionButton={{
-              initial: {opacity: 0, y: 10},
-              animate: {opacity: 1, y: 0},
-              transition: {ease: 'easeOut', delay: 1}
-            }}
-            buttonStyles={{
-              marginTop: '3rem',
-              backgroundColor: '#A5E1F8',
-              color: '#000',
-              fontSize: 'x-large',
-              padding: '9px 20px'
-            }}
-            onClick={handleWelcomeButton}
+              <Button
+                text={'Entrée'}
+                icon={'arrow_forward'}
+                motionButton={{
+                  initial: {opacity: 0, y: 10},
+                  animate: {opacity: 1, y: 0},
+                  transition: {ease: 'easeOut', delay: 1}
+                }}
+                buttonStyles={{
+                  marginTop: '3rem',
+                  backgroundColor: '#A5E1F8',
+                  color: '#000',
+                  fontSize: 'x-large',
+                  padding: '9px 20px'
+                }}
+                onClick={handleWelcomeButton}
+              />
+            </motion.div>
+          </div>
+          <motion.div
+            initial={{ opacity: 1 }}
+            animate={{ opacity: isFirstTime ? 0 : 1 }}
+          >
+            <Navbar fetchData={data} fetchError={error} />
+            <Component {...pageProps} />
+            <Footer fetchData={data} />
+          </motion.div>
+          <div
+            ref={notifierRef}
+            className={classNames(styles.icNotifier, lato.className)}
           />
-        </motion.div>
-      </div>
-      <motion.div
-        initial={{ opacity: 1 }}
-        animate={{ opacity: isFirstTime ? 0 : 1 }}  
-      >
-        <Navbar />
-        <Component {...pageProps} />
-      </motion.div>
-      <div
-        ref={notifierRef}
-        className={classNames(styles.icNotifier, lato.className)}
-      />
+        </ThemeDispatchContext.Provider>
+      </ThemeContext.Provider>
     </>
   )
 }

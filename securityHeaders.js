@@ -3,7 +3,7 @@ const ContentSecurityPolicy = `
   script-src 'self';
   child-src example.com;
   style-src 'self' fonts.googleapis.com;
-  font-src 'self';  
+  font-src 'self';
 `
 
 

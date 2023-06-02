@@ -1,0 +1,58 @@
+.icFooter {
+  background-color: #0e1012;
+  color: #fff;
+  padding-top: 5rem;
+}
+
+.icListing {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  row-gap: 3rem;
+  padding-bottom: 3rem;
+}
+
+.icCategory {
+  padding: 0rem 2rem;
+}
+
+.icCategory h3 {
+  margin-bottom: 1rem;
+  font-size: 25px;
+}
+
+.icCategory p {
+  font-size: 15px;
+}
+
+.footerBottom {
+  padding: 0 2rem;
+  display: flex;
+  gap: 4rem;
+  height: 4rem;
+  background-color: #1c1e20;
+  align-items: center;
+}
+
+.footerBottom p {
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.footerBottom ul {
+  font-size: 15px;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.icLink {
+  margin-top: 10px;
+}
+
+.icSeeMore {
+  margin-bottom: 0.8rem;
+  text-decoration: underline;
+  margin-top: 15px;
+}

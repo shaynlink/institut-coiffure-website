@@ -1,0 +1,28 @@
+.icCardSchedule {
+   border-radius: 8px;
+   display: flex;
+   flex-direction: column;
+   justify-items: space-between;
+   background-color: #fff;
+   padding: 20px;
+   width: 330px;
+   height: 340px;
+}
+
+.icCardSchedule > h3 {
+  margin-bottom: 1rem;
+}
+
+.icCardSchedule > ul > li {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 0.6rem 0;
+  font-weight: bold;
+}
+
+.icCardSchedule > ul > hr {
+  background-color: #bbbbbb;
+  border: none;
+  height: 1px;
+}

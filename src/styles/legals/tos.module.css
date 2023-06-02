@@ -1,0 +1,7 @@
+.icContainer {
+  padding-top: var(--navbar-height);
+}
+
+.icPdfContainer {
+  height: calc(100vh - var(--navbar-height));
+}

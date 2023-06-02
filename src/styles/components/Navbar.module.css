@@ -1,15 +1,21 @@
 .icNavbar {
     font-size: 20px;
-    height: 4rem;
     width: 100vw;
-    display: grid;
-    grid-template-columns: 2fr 2fr 10rem;
-    padding: 0rem 2rem;
     position: fixed;
     z-index: 1;
     top: 0;
     left: 0;
-    color: white;
+    color: black;
+    background-color: #fff !important;
+    box-shadow: 0 0px 5px #efefef;
+    height: var(--navbar-height);
+}
+
+.icTopNavbar {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 2fr 2fr /*10rem*/;
+  padding: 1rem 2rem 0rem;
 }
 
 .icNavbarBranding {
@@ -44,4 +50,22 @@
     display: flex;
     align-items: center;
     gap: 10px;
+}
+
+.prestationsList {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  margin-top: 1rem;
+  padding: 1rem 2rem
+}
+
+.icService {
+  margin-bottom: .8rem;
+  text-transform: capitalize;
+}
+
+.prestationsCategory {
+  background-color: white;
+  width: 100vw;
 }

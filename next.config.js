@@ -8,6 +8,16 @@ const nextConfig = {
     return [
       { source: '/:path*', headers: securityHeaders },
     ]
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'd375139ucebi94.cloudfront.net',
+        port: '',
+        pathname: '/**'
+      }
+    ]
   }
 }
 

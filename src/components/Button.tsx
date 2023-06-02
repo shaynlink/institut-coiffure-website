@@ -2,6 +2,7 @@ import styles from '@/styles/components/Button.module.css';
 import { classNameIcon } from '@/utils';
 import { ButtonHTMLAttributes, CSSProperties, DetailedHTMLProps } from 'react';
 import { ForwardRefComponent, HTMLMotionProps, motion } from 'framer-motion';
+import Link from 'next/link';
 
 interface ButtonProps {
     text?: string;
@@ -9,6 +10,7 @@ interface ButtonProps {
     buttonStyles?: CSSProperties | undefined;
     iconStyles?: CSSProperties | undefined;
     motionButton?: HTMLMotionProps<"button"> | undefined;
+    href?: string;
 }
 
 export default function Button({
@@ -17,6 +19,7 @@ export default function Button({
     buttonStyles,
     iconStyles,
     motionButton,
+    href,
     ...basicProps
 }: ButtonProps & DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>): JSX.Element {
     if (!text && !icon) {
@@ -36,15 +39,19 @@ export default function Button({
                 <motion.button
                     {...props as ForwardRefComponent<HTMLButtonElement, HTMLMotionProps<"button">>}
                 >
-                    {children}
+                  {href
+                  ? (<Link href={href} style={{display: 'flex', alignItems: 'center', gap: '.5rem'}}>{children}</Link>)
+                  : children}
                 </motion.button>
             )
         } else {
             return (
-                <button 
+                <button
                     {...props as DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>}
                 >
-                    {children}
+                    {href
+                      ? (<Link href={href} style={{display: 'flex', alignItems: 'center', gap: '.5rem'}}>{children}</Link>)
+                      : children}
                 </button>
             )
         }

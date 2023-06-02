@@ -1,6 +1,7 @@
 :root {
   --foreground-rgb: #000000;
-  --background-rgb: #ffffff;
+  --background-rgb: #f7f7f7;
+  --navbar-height: 56px;
 }
 
 * {
@@ -18,7 +19,7 @@ body {
 
 body {
   color: var(--foreground-rgb);
-  background: var(--background-start-rgb);
+  background: var(--background-rgb);
 }
 
 a {
@@ -32,6 +33,16 @@ a {
   'wght' 400,
   'GRAD' -25,
   'opsz' 48
+}
+
+.icBoxShadow {
+  box-shadow: 0 4px 8px -2px rgb(26 27 31 / 8%);
+}
+
+.sticky_overwrite_fix_active {
+  width: 100%;
+  justify-content: center;
+  display: flex;
 }
 
 @keyframes slidein {
