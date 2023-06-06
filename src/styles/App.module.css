@@ -63,3 +63,9 @@
   width: 0%;
   background-color: black;
 }
+
+@media (max-width: 767.98px) {
+  .icWelcome {
+    font-size: large;
+  }
+}
