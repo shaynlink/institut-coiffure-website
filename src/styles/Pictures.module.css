@@ -20,3 +20,18 @@
   height: 100%;
   border-radius: 3px;
 }
+
+@media (max-width: 767.98px) {
+   .icContainer {
+    padding: 1rem;
+    padding-top: calc(1rem + var(--navbar-height));
+  }
+
+  .icPicturesContainer {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .icPictureContainer {
+    width: 10rem;
+  }
+}

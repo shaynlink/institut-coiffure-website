@@ -86,3 +86,18 @@
   gap: 1rem;
   width: unset !important;
 }
+
+@media (max-width: 767.98px) {
+  .icContainer {
+    padding: 1rem;
+  }
+  
+  .icSection {
+    padding-top: var(--navbar-height);
+  }
+
+  .icServicesContainer {
+    display: flex;
+    flex-direction: column;
+  }
+}

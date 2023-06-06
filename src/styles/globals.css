@@ -4,6 +4,16 @@
   --navbar-height: 56px;
 }
 
+@media (max-width: 767.98px) {
+  :root {
+    --navbar-height: 90px;
+  }
+
+  .mapboxgl-canvas {
+    width: 100%;
+  }
+}
+
 * {
   box-sizing: border-box;
   padding: 0;
