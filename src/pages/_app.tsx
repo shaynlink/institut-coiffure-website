@@ -136,19 +136,6 @@ export default function App({ Component, pageProps }: AppProps) {
           notifierRef.current.appendChild(notif);
         }
       }
-
-      window.createNotif(
-        '<span class="material-symbols-outlined" style="margin-right: 1rem">warning</span> Le site est actuellement en bêta, si vous rencontrée des difficultés merci de me contacter',
-        ['black', '#EAEA0A'],
-        5000,
-        {
-          contentStyle: {
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }
-        }
-      )
     }
   }, []);
 
