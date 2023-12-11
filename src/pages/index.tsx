@@ -281,6 +281,14 @@ export default function Home() {
               <Button text={'Reserver maintenant'} icon={'event'} href={process.env.NEXT_PUBLIC_BOOKING || '/'}/>
               <Button text={'Appeler'} icon={'call'} href={'tel:0556871114'} />
             </div>
+            <div>
+              <h1
+                style={{
+                  color: '#EC3535',
+                  textAlign: 'center'
+                }}
+              >Votre salon sera exceptionnellement fermé du 22 décembre 2023 au 6 janvier 2024 inclus.</h1>
+            </div>
           </div>
           <div className={styles.icHomeHeroPrincipalContainer}>
             <div className={styles.icHome3DContainer} ref={model3dContainerRef} />
