@@ -332,7 +332,7 @@ export default function Home() {
                 href={'https://goo.gl/maps/RcA221caMDVTn3sv7'}
                 className={styles.icAddress}>105 Rte de Toulouse, 33400 Talence
               </Link>
-              <p>05 56 87 11 17</p>
+              <p>05 56 87 11 14</p>
 
               <div className={styles.icInfos}>
                 <p><b>Bienvenue à L&apos;Institut Coiffure, adresse beauté masculin-féminin chaudement recommandée par les habitants de Talence. Rafika est votre hairstylist aux doigts de fée : grâce à son talent et à son sens inné de la mode, vous basculez sans concession du côté tendance !</b></p>
