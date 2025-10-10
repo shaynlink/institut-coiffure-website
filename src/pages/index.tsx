@@ -287,7 +287,7 @@ export default function Home() {
                   color: '#EC3535',
                   textAlign: 'center'
                 }}
-              >Votre salon sera exceptionnellement fermé du 23 Juillet 2024 au 6 Août 2024 inclus.</h1>
+              >Votre salon sera exceptionnellement fermé du 9 Octobre 2025 au 24 Octobre 2025 inclus.</h1>
             </div>
           </div>
           <div className={styles.icHomeHeroPrincipalContainer}>
